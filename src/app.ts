@@ -14,7 +14,9 @@ class MyEmitter extends EventEmitter {}
 
 const myEmitter = new MyEmitter();
 
-mongoose.connect("mongodb://localhost/emergency").then(() => {
+const db_url = process.env.DB_URL || "";
+
+mongoose.connect(db_url).then(() => {
     console.log("Connected to DB");
 });
 
