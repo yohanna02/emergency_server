@@ -4,7 +4,8 @@ export interface Request {
     longitude: number,
     latitude: number,
     note?: string,
-    userId: string
+    userId: string,
+    resolved: boolean
 };
 
 const schema = new mongoose.Schema<Request>({
@@ -22,6 +23,10 @@ const schema = new mongoose.Schema<Request>({
     userId: {
         type: String,
         required: true
+    },
+    resolved: {
+        type: Boolean,
+        default: false
     }
 });
 

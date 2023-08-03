@@ -10,7 +10,7 @@ import { Request } from "./model/request.model";
 
 dotenv.config();
 
-class MyEmitter extends EventEmitter {}
+class MyEmitter extends EventEmitter { }
 
 const myEmitter = new MyEmitter();
 
@@ -25,9 +25,32 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/requests", async (req, res) => {
-    const requests = requestModel.find();
+    try {
+        const requests = await requestModel.find({ resolved: false });
 
-    res.json(requests);
+        res.json(requests);
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error Fetching requests" });
+    }
+});
+
+app.put("/api/resolve", async (req, res) => {
+    try {
+        const { requestId } = req.body as { requestId: string };
+        const request = await requestModel.findById(requestId);
+
+        if (!request) {
+            res.status(404).json({success: false, message: "Invalid request Id"});
+            return;
+        }
+
+        request.resolved = true;
+        await request.save();
+
+        res.json({success: true, message: "Request resolved successfully"});
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error resolving request" });
+    }
 });
 
 app.post("/api/request", async (req, res) => {
@@ -42,7 +65,7 @@ app.post("/api/request", async (req, res) => {
 
     try {
         await newRequest.save();
-        res.json({success: true, message: "Request made successfully"});
+        res.json({ success: true, message: "Request made successfully" });
         myEmitter.emit("request", {
             latitude,
             longitude,
@@ -50,7 +73,7 @@ app.post("/api/request", async (req, res) => {
             note
         });
     } catch (err) {
-        res.status(500).json({success: false, message: "Error making request"});
+        res.status(500).json({ success: false, message: "Error making request" });
     }
 });
 
@@ -62,7 +85,7 @@ server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
-const webSocketServer = new ws.Server({server});
+const webSocketServer = new ws.Server({ server });
 
 webSocketServer.on("connection", (ws) => {
     console.log("Web socket connected");
