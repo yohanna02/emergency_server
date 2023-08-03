@@ -3,7 +3,7 @@ import http from "http";
 import ws from "ws";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { EventEmitter } from "node:events";
+import { EventEmitter } from "events";
 
 import requestModel from "./model/request.model";
 import { Request } from "./model/request.model";
