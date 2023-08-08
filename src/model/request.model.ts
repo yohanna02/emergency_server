@@ -1,12 +1,6 @@
 import mongoose from "mongoose";
 
-export interface Request {
-    longitude: number,
-    latitude: number,
-    note?: string,
-    userId: string,
-    resolved: boolean
-};
+import { Request } from "../interface/types";
 
 const schema = new mongoose.Schema<Request>({
     longitude: {
