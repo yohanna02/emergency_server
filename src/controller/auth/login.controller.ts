@@ -27,7 +27,7 @@ const login = async (req: Request, res: Response) => {
 
         const secret = process.env.JWT_SECRET || "";
         const token = jwt.sign(user.id, secret);
-        res.json({success: true, token});
+        res.json({success: true, fullName: user.fullName, token});
     } catch (err) {
         res.status(500).json({success: false, message: "An Error occured"});
     }
