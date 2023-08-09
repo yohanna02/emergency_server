@@ -13,9 +13,16 @@ const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const requests = await requestModel.find({ resolved: false });
+        const select = req.query.select;
 
-        res.json(requests);
+        const requestdNotResolved = await requestModel.find({ resolved: false });
+        if (select === "all") {
+            const requestdResolved = await requestModel.find({ resolved: true });
+
+            res.json({ requestdNotResolved, requestdResolved });
+            return;
+        }
+        res.json(requestdNotResolved);
     } catch (err) {
         res.status(500).json({ success: false, message: "Error Fetching requests" });
     }
@@ -27,14 +34,14 @@ router.put("/resolve", async (req, res) => {
         const request = await requestModel.findById(requestId);
 
         if (!request) {
-            res.status(404).json({success: false, message: "Invalid request Id"});
+            res.status(404).json({ success: false, message: "Invalid request Id" });
             return;
         }
 
         request.resolved = true;
         await request.save();
 
-        res.json({success: true, message: "Request resolved successfully"});
+        res.json({ success: true, message: "Request resolved successfully" });
     } catch (err) {
         res.status(500).json({ success: false, message: "Error resolving request" });
     }
