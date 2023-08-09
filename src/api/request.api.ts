@@ -10,7 +10,7 @@ export const myEmitter = new MyEmitter();
 
 const router = Router();
 
-router.get("/api/requests", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const requests = await requestModel.find({ resolved: false });
 
@@ -20,7 +20,7 @@ router.get("/api/requests", async (req, res) => {
     }
 });
 
-router.put("/api/resolve", async (req, res) => {
+router.put("/resolve", async (req, res) => {
     try {
         const { requestId } = req.body as { requestId: string };
         const request = await requestModel.findById(requestId);
@@ -39,7 +39,7 @@ router.put("/api/resolve", async (req, res) => {
     }
 });
 
-router.post("/api/request", async (req, res) => {
+router.post("/", async (req, res) => {
     const { latitude, longitude, userId, note } = req.body as Request;
 
     const newRequest = new requestModel({
