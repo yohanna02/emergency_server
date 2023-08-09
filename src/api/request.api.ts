@@ -3,6 +3,7 @@ import { EventEmitter } from "events";
 
 import requestModel from "../model/request.model";
 import { Request } from "../interface/types";
+import isAuth from "../middlewares/isAuth";
 
 class MyEmitter extends EventEmitter { }
 
@@ -39,8 +40,9 @@ router.put("/resolve", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
-    const { latitude, longitude, userId, note } = req.body as Request;
+router.post("/", isAuth, async (req, res) => {
+    const { latitude, longitude, note } = req.body as Request;
+    const userId = res.locals.user.id;
 
     const newRequest = new requestModel({
         latitude,
