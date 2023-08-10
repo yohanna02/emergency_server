@@ -17,9 +17,9 @@ router.get("/", async (req, res) => {
             const select = req.query.select;
             if (res.locals.user) {
                 const user = res.locals.user;
-                const requestdNotResolved = await requestModel.find({ resolved: false, userId: user.id });
+                const requestdNotResolved = await requestModel.find({ resolved: false, userId: user.id }).sort({"createdAt": "desc"});
                 if (select === "all") {
-                    const requestdResolved = await requestModel.find({ resolved: true, userId: user.id });
+                    const requestdResolved = await requestModel.find({ resolved: true, userId: user.id }).sort({"createdAt": "desc"});
         
                     res.json({ requestdNotResolved, requestdResolved });
                     return;
@@ -29,9 +29,9 @@ router.get("/", async (req, res) => {
             }
             
             
-            const requestdNotResolved = await requestModel.find({ resolved: false });
+            const requestdNotResolved = await requestModel.find({ resolved: false }).sort({"createdAt": "desc"});
             if (select === "all") {
-                const requestdResolved = await requestModel.find({ resolved: true });
+                const requestdResolved = await requestModel.find({ resolved: true }).sort({"createdAt": "desc"});
     
                 res.json({ requestdNotResolved, requestdResolved });
                 return;

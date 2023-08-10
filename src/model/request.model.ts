@@ -22,7 +22,7 @@ const schema = new mongoose.Schema<Request>({
         type: Boolean,
         default: false
     }
-});
+}, {timestamps: true});
 
 const model = mongoose.model<Request>("request", schema);
 export default model;
