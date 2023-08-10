@@ -6,7 +6,7 @@ import userModel from "../model/user.model";
 
 dotenv.config();
 
-export default async (req: Request, res: Response, next: NextFunction) => {
+export default async (req: Request, res: Response, next: () => void, option = {respond: true}) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
         const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -23,8 +23,15 @@ export default async (req: Request, res: Response, next: NextFunction) => {
                 }
             }
         }
-        res.status(401).json({ succuss: true, message: "Unauthorized" });
+
+        if (option.respond)
+            res.status(401).json({ succuss: true, message: "Unauthorized" });
+        else
+            next();
     } catch (err) {
-        res.status(500).json({ succuss: true, message: "An Error occured" });
+        if (option.respond)
+            res.status(500).json({ succuss: true, message: "An Error occured" });
+        else
+            next();
     }
 }

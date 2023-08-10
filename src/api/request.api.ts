@@ -13,16 +13,33 @@ const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const select = req.query.select;
+        isAuth(req, res, async () => {
+            const select = req.query.select;
+            if (res.locals.user) {
+                const user = res.locals.user;
+                const requestdNotResolved = await requestModel.find({ resolved: false, userId: user.id });
+                if (select === "all") {
+                    const requestdResolved = await requestModel.find({ resolved: true, userId: user.id });
+        
+                    res.json({ requestdNotResolved, requestdResolved });
+                    return;
+                }
+                res.json(requestdNotResolved);
+                return;
+            }
+            
+            
+            const requestdNotResolved = await requestModel.find({ resolved: false });
+            if (select === "all") {
+                const requestdResolved = await requestModel.find({ resolved: true });
+    
+                res.json({ requestdNotResolved, requestdResolved });
+                return;
+            }
+            res.json(requestdNotResolved);
+        }, {respond: false});
 
-        const requestdNotResolved = await requestModel.find({ resolved: false });
-        if (select === "all") {
-            const requestdResolved = await requestModel.find({ resolved: true });
 
-            res.json({ requestdNotResolved, requestdResolved });
-            return;
-        }
-        res.json(requestdNotResolved);
     } catch (err) {
         res.status(500).json({ success: false, message: "Error Fetching requests" });
     }
