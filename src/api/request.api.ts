@@ -76,9 +76,11 @@ router.post("/", isAuth, async (req, res) => {
     });
 
     try {
-        await newRequest.save();
+        const savedRequest = await newRequest.save();
+
         res.json({ success: true, message: "Request made successfully" });
         myEmitter.emit("request", {
+            _id: savedRequest.id,
             latitude,
             longitude,
             userId,
